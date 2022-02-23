@@ -27,15 +27,23 @@ const sockets = [];         //접속자들
 wss.on("connection", (socket) => {
     console.log("Connected to Broswer! ✅");
     sockets.push(socket);
+    socket["nickname"] = "Anonymous";
     console.log(sockets);
     socket.on("close", () => {
         console.log("DisConnected by Broswer!!! ❌")
     });     //브라우저에서 닫았을때
     socket.on("message", (message) => { //  FE에서 받은 메세지를 다시 FE에게 보내준다.
-        console.log(message.toString());
-        sockets.forEach((aSocket) => {
-            aSocket.send(message.toString());
-        });
+        const parsedMsg = JSON.parse(message);
+        switch(parsedMsg.type){
+            case "msg" : 
+                sockets.forEach((aSocket) => {
+                    aSocket.send(`${socket.nickname} :   ${parsedMsg.payload}`);
+                });
+            break;
+            case "nick":
+                socket["nickname"] = parsedMsg.payload;
+            break;
+        }
     });
 
 });

@@ -14,6 +14,7 @@ nickForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const input = nickForm.querySelector("input");
     feSocket.send(makeMsg("nick", input.value));    //JSON의 string화
+    input.value = "";
 });
 
 //서버실행시 이벤트
